@@ -1,0 +1,5 @@
+﻿  NPC.cpp
+c:\users\henk\documents\sourcetree projecten\obopa_1\obopa3\obopa3\obopa3\npc.cpp(11): error C2084: function 'NPC::~NPC(void)' already has a body
+  c:\users\henk\documents\sourcetree projecten\obopa_1\obopa3\obopa3\obopa3\npc.h(8): note: see previous definition of '{dtor}'
+  OBOPA3.cpp
+  Generating Code...
