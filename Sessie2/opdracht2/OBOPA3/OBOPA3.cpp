@@ -8,15 +8,17 @@
 #include "Soldier.h"
 #include "Shaman.h"
 
+#include <memory>
+
 int main() {
-	NPC *orc1 = new Soldier(new Orc("Grunk"));
+	std::unique_ptr<NPC> orc1(new Soldier(new Orc("Grunk")));
 	std::cout << orc1->render() << std::endl;
 
-	NPC *Elf1 = new Shaman(new Elf("Dobby"));
-	std::cout << Elf1->render() << std::endl;
+	std::unique_ptr<NPC> elf1(new Shaman(new Elf("Dobby")));
+	std::cout << elf1->render() << std::endl;
 
-	NPC *Elf2 = new Farmer(new Elf("Elvis"));
-	std::cout << Elf2->render() << std::endl;
+	std::unique_ptr<NPC> elf2(new Farmer(new Elf("Elvis")));
+	std::cout << elf2->render() << std::endl;
 
 	return 0;
 }

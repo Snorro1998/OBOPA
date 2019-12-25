@@ -4,21 +4,7 @@
 class Shaman : public NPCEmployer
 {
 public:
-	Shaman(NPC *employedNPC) : NPCEmployer(employedNPC) {}
+	Shaman(NPC *employedNPC);
 
-	std::string render() {
-		return m_employedNPC->render() + "Occupation: Shaman\n";
-	}
+	std::string render() override;
 };
-
-/*
-class Shaman : public NPCEmployer
-{
-public:
-	Shaman(NPC *employedNPC) : NPCEmployer(employedNPC) {}
-
-	std::string render() {
-		return m_employedNPC->render() + "Occupation: Shaman\n";
-	}
-};
-*/

@@ -1,13 +1,8 @@
 #include "pch.h"
 #include "Shaman.h"
 
-/*
-Shaman::Shaman()
-{
-}
+Shaman::Shaman(NPC *employedNPC) : NPCEmployer(employedNPC) {}
 
-
-Shaman::~Shaman()
-{
+std::string Shaman::render() {
+	return m_employedNPC->render() + "Occupation: Shaman\n";
 }
-*/

@@ -7,7 +7,6 @@ class Bankrekening
 {
 public:
 	Bankrekening(float saldo, std::vector<Transactie> transacties);
-	~Bankrekening();
 
 	Bankrekening operator+(const Transactie& transactie) const;
 	Bankrekening operator-(const Transactie& transactie) const;

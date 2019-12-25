@@ -8,8 +8,8 @@ int main()
 
 	Bankrekening bankrekening = Bankrekening(20, geen);
 
-	Transactie transactie1 = Transactie("BIJ", 200, "6/9/2010");
-	Transactie transactie2 = Transactie("AFS", 100, "7/9/2010");
+	Transactie transactie1("BIJ", 200, "6/9/2010");
+	Transactie transactie2("AFS", 100, "7/9/2010");
 
 	std::cout << bankrekening << std::endl;
 

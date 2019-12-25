@@ -1,13 +1,8 @@
 #include "pch.h"
 #include "Farmer.h"
 
-/*
-Farmer::Farmer()
-{
-}
+Farmer::Farmer(NPC *employedNPC) : NPCEmployer(employedNPC) {}
 
-
-Farmer::~Farmer()
-{
+std::string Farmer::render() {
+	return m_employedNPC->render() + "Occupation: Farmer\n";
 }
-*/

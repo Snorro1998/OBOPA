@@ -1,13 +1,8 @@
 #include "pch.h"
 #include "Soldier.h"
 
-/*
-Soldier::Soldier()
-{
-}
+Soldier::Soldier(NPC *employedNPC) : NPCEmployer(employedNPC) {}
 
-
-Soldier::~Soldier()
-{
+std::string Soldier::render() {
+	return m_employedNPC->render() + "Occupation: Soldier\n";
 }
-*/

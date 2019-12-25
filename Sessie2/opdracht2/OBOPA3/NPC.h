@@ -7,6 +7,8 @@ public:
 	NPC();
 	virtual ~NPC() {}
 
+	std::string name;
+
 	virtual std::string render() = 0;
 };
 

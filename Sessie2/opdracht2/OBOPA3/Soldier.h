@@ -4,19 +4,7 @@
 class Soldier : public NPCEmployer
 {
 public:
-	Soldier(NPC *employedNPC) : NPCEmployer(employedNPC) {}
+	Soldier(NPC *employedNPC);
 
-	std::string render() {
-		return m_employedNPC->render() + "Occupation: Soldier\n";
-	}
+	std::string render() override;
 };
-/*
-class Soldier : public NPCEmployer
-{
-public:
-	Soldier(NPC *employedNPC) : NPCEmployer(employedNPC) {}
-
-	std::string render() {
-		return m_employedNPC->render() + "Occupation: Soldier\n";
-	}
-};*/

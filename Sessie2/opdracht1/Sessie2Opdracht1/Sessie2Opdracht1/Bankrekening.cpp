@@ -8,11 +8,6 @@ Bankrekening::Bankrekening(float saldo, std::vector<Transactie> transacties)
 	this->transacties = transacties;
 }
 
-
-Bankrekening::~Bankrekening()
-{
-}
-
 Bankrekening Bankrekening::operator+(const Transactie& transactie) const {
 	std::vector<Transactie> transactiesNieuw = transacties;
 	transactiesNieuw.push_back(transactie);
@@ -30,11 +25,10 @@ std::ostream& operator<<(std::ostream& os, const Bankrekening& bankrekening) {
 		<< "Transactiegeschiedenis: " << std::endl;
 
 	std::vector<Transactie> tra = bankrekening.transacties;
-	std::vector<Transactie>::iterator tr = tra.begin();
 
-	while (tr != tra.end()) {
-		os << (*tr).geefBeschrijving() << std::endl;
-		tr++;
+	for (const auto &t : tra)
+	{
+		os << t.geefBeschrijving() << std::endl;
 	}
 	os << std::endl;
 	

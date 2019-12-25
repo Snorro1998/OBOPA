@@ -4,10 +4,8 @@
 class Farmer : public NPCEmployer
 {
 public:
-	Farmer(NPC *employedNPC) : NPCEmployer(employedNPC) {}
+	Farmer(NPC *employedNPC);
 
-	std::string render() {
-		return m_employedNPC->render() + "Occupation: Farmer\n";
-	}
+	std::string render() override;
 };
 

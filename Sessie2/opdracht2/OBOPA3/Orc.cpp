@@ -10,5 +10,5 @@ Orc::Orc(std::string nam)
 
 std::string Orc::render()
 {
-	return "Elf\nname: " + name + "\n";
+	return "Orc\nname: " + name + "\n";
 }
