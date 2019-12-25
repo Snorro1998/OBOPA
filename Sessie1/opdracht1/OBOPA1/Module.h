@@ -16,7 +16,8 @@ public:
 	void geefModuleBeschrijving();
 	void somDocentenOp();
 	void somStudentenOp();
-	void verwijderStudent(int i);
+	void verwijderStudent(Student *s);
+	Student *geefStudent(int i);
 	void wijzigEC(int i);
 
 private:

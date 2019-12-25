@@ -5,6 +5,7 @@
 #include <random>
 #include "time.h"
 #include <chrono> 
+#include <algorithm>
 
 #define N_DOCENTEN 3
 #define N_STUDENTEN 10
@@ -79,8 +80,12 @@ void wijzigEC(std::vector<Module*> mods, std::vector<Student*> studs) {
 }
 
 void verwijderStudent(std::vector<Module*> mods) {
-	std::vector<Module*>::iterator mod = mods.begin() + 1;
-	(*mod)->verwijderStudent(0);
+	//std::vector<Module*>::iterator mod = mods.begin() + 1;
+	Student *s = mods[1]->geefStudent(0);
+	for (Module *m : mods)
+		m->verwijderStudent(s);
+	//(*mod)->verwijderStudent(0);
+	delete s;
 	toonModules(mods);
 }
 

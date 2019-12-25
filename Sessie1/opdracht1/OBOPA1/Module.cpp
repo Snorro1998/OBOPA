@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Module.h"
 #include <iostream>
+#include <memory>
+#include <cassert>
+#include <cstddef>
 
 Module::Module(std::string naam, int ec) : naam(naam), ec(ec)
 {
@@ -59,8 +62,24 @@ void Module::wijzigEC(int i) {
 	ec = i;
 }
 
-void Module::verwijderStudent(int i) {
+Student *Module::geefStudent(int i) {
+	return studenten[i];
+}
+
+void Module::verwijderStudent(Student *s) {
+	size_t old = studenten.size();
+	int i = 0;
+	for (Student *ss : studenten)
+		if (s == ss)
+			break;
+		else
+			++i;
+
+	if (i >= studenten.size())
+		return;
+
 	studenten.erase(studenten.begin() + i);
+	assert(studenten.size() + 1 == old);
 }
 
 
