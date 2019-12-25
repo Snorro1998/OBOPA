@@ -1,17 +1,43 @@
 #include "pch.h"
 #include "Grid.h"
 
-Grid::Grid()
+#include <cstring>
+#include <random>
+
+Grid::Grid(StrategyType type, bool randomize)
 {
-	for (int j = 0; j < SIZE_VER; j++) {
-		for (int i = 0; i < SIZE_HOR; i++) {
-			raster[i][j] = CELL_EMPTY;
+	if (randomize) {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(0, 1);
+
+		for (int j = 0; j < SIZE_VER; j++) {
+			for (int i = 0; i < SIZE_HOR; i++) {
+				raster[i][j] = dis(gen) ? CELL_FULL : CELL_EMPTY;
+			}
 		}
 	}
-}
+	else {
+		memset(raster, CELL_EMPTY, SIZE_VER * SIZE_HOR);
 
-Grid::~Grid()
-{
+		fillCell(1, 0);
+		fillCell(2, 1);
+		fillCell(0, 2);
+		fillCell(1, 2);
+		fillCell(2, 2);
+	}
+
+	switch (type) {
+	case normal:
+		strategy.reset(new Strategy());
+		break;
+	case wrap:
+		strategy.reset(new Strategy(true));
+		break;
+	case neighbour_variant:
+		strategy.reset(new Strategy2x2(1, 3, 1, 2, true));
+		break;
+	}
 }
 
 void Grid::clearScreen() {
@@ -28,50 +54,53 @@ void Grid::printGrid() {
 }
 
 void Grid::calcNeigh() {
-	for (int j = 0; j < SIZE_VER; j++) {
-		for (int i = 0; i < SIZE_HOR; i++) {
-			int numNeigh = 0;
-			if (j > 0) {
-				if (raster[i][j - 1] == CELL_FULL) numNeigh++;
-			}
-			if (j < SIZE_VER) {
-				if (raster[i][j + 1] == CELL_FULL) numNeigh++;
-			}
-			if (i > 0) {
+	const std::vector<Offset> &offsets = strategy->offsets;
 
-				if (j > 0) {
-					if (raster[i - 1][j - 1] == CELL_FULL) numNeigh++;
-				}
-				if (j < SIZE_VER) {
-					if (raster[i - 1][j + 1] == CELL_FULL) numNeigh++;
-				}
+	for (int y = 0; y < SIZE_VER; ++y) {
+		for (int x = 0; x < SIZE_HOR; ++x) {
+			int nx, ny, count = 0;
 
-				if (raster[i - 1][j] == CELL_FULL) numNeigh++;
-			}
+			for (auto &o : offsets) {
+				nx = x + o.dx;
+				ny = y + o.dy;
 
-			if (i < SIZE_HOR) {
-				if (j > 0) {
-					if (raster[i + 1][j - 1] == CELL_FULL) numNeigh++;
-				}
-				if (j < SIZE_VER) {
-					if (raster[i + 1][j + 1] == CELL_FULL) numNeigh++;
+				if (strategy->wrapMode) {
+					if (nx < 0)
+						nx += SIZE_HOR;
+					else if (nx >= SIZE_HOR)
+						nx -= SIZE_HOR;
+					if (ny < 0)
+						ny += SIZE_VER;
+					else if (ny >= SIZE_VER)
+						ny -= SIZE_VER;
 				}
 
-				if (raster[i + 1][j] == CELL_FULL) numNeigh++;
+				// bounds check
+				if (nx < 0 || ny < 0 || nx >= SIZE_HOR || ny >= SIZE_VER) {
+					continue;
+				}
+
+				if (raster[nx][ny] == CELL_FULL) {
+					++count;
+				}
 			}
-			rasterNeigh[i][j] = numNeigh;
+
+			rasterNeigh[x][y] = count;
 		}
 	}
 }
 
 void Grid::updateGrid() {
-	for (int j = 0; j < SIZE_VER; j++) {
-		for (int i = 0; i < SIZE_HOR; i++) {
-			if (rasterNeigh[i][j] < 2 || rasterNeigh[i][j] > 3) {
-				raster[i][j] = CELL_EMPTY;
+	int liveMin = strategy->liveMin, liveMax = strategy->liveMax;
+	int bornMin = strategy->bornMin, bornMax = strategy->bornMax;
+
+	for (int y = 0; y < SIZE_VER; y++) {
+		for (int x = 0; x < SIZE_HOR; x++) {
+			if (rasterNeigh[x][y] < liveMin || rasterNeigh[x][y] > liveMax) {
+				raster[x][y] = CELL_EMPTY;
 			}
-			else if (rasterNeigh[i][j] == 3 && raster[i][j] == CELL_EMPTY) {
-				raster[i][j] = CELL_FULL;
+			else if (rasterNeigh[x][y] >= bornMin && rasterNeigh[x][y] <= bornMax && raster[x][y] == CELL_EMPTY) {
+				raster[x][y] = CELL_FULL;
 			}
 		}
 	}
@@ -82,14 +111,6 @@ void Grid::generateGrid() {
 	printGrid();
 	calcNeigh();
 	updateGrid();
-}
-
-void Grid::addWalker() {
-	fillCell(1, 0);
-	fillCell(2, 1);
-	fillCell(0, 2);
-	fillCell(1, 2);
-	fillCell(2, 2);
 }
 
 void Grid::fillCell(char i, char j) {

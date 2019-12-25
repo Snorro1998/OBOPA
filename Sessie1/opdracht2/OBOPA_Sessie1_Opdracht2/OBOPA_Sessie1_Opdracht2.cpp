@@ -3,11 +3,12 @@
 
 int main()
 {
-	Grid grid = Grid();
-	grid.addWalker();
+	Grid grid(Grid::StrategyType::neighbour_variant);
 
 	while (1) {
 		grid.generateGrid();
-		Sleep(150);
+		Sleep(50);
 	}
+
+	return 0;
 }
