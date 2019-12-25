@@ -13,13 +13,13 @@ void Module::voegDocentToe(Docent* d) {
 	docenten.push_back(d);
 }
 
-void Module::voegStudentToe(Student* s) {
-	studenten.push_back(s);
+void Module::voegStudentToe(std::shared_ptr<Student> s) {
+	studenten.insert(s);
 	s->geefPunten(ec);
 }
 
 void Module::geefModuleBeschrijving() {
-	std::cout << "Moduleinformatie:" << std::endl;// << std::endl;
+	std::cout << "Moduleinformatie:" << std::endl;
 	std::cout << "Naam: " << naam << std::endl;
 	somDocentenOp();
 	
@@ -28,8 +28,7 @@ void Module::geefModuleBeschrijving() {
 }
 
 void Module::somDocentenOp() {
-	std::string str = docenten.size() == 0 ? ": geen" : docenten.size() == 1 ? ": " : "en: ";
-	std::cout << "Docent" << str;
+	std::cout << "Docent" << (docenten.size() == 0 ? ": geen" : docenten.size() == 1 ? ": " : "en: ");
 
 	std::vector<Docent*>::iterator it = docenten.begin();
 	while (it != docenten.end()) {
@@ -41,47 +40,32 @@ void Module::somDocentenOp() {
 }
 
 void Module::somStudentenOp() {
-	std::string str = studenten.size() == 0 ? ": geen" : studenten.size() == 1 ? ": " : "en: ";
-	std::cout << "Student" << str;
+	std::cout << "Student" << (studenten.size() == 0 ? ": geen" : studenten.size() == 1 ? ": " : "en: ");
 
-	std::vector<Student*>::iterator it = studenten.begin();
-	while (it != studenten.end()) {
+	for (auto it = studenten.cbegin(); it != studenten.cend(); ++it) {
+		if (it != studenten.cbegin())
+			std::cout << ", ";
 		std::cout << (*it)->vertelNaam();
-		if (it < studenten.end() - 1) std::cout << ", ";
-		it++;
 	}
 	std::cout << std::endl;
 }
 
-void Module::wijzigEC(int i) {
-	std::vector<Student*>::iterator stu = studenten.begin();
-	while (stu != studenten.end()) {
-		(*stu)->totaalEC += i - ec;
-		stu++;
+void Module::wijzigEC(int ec) {
+	for (auto &x : studenten) {
+		x->totaalEC += ec - this->ec;
 	}
-	ec = i;
+	this->ec = ec;
 }
 
-Student *Module::geefStudent(int i) {
-	return studenten[i];
+void Module::verwijderStudent(std::shared_ptr<Student> s) {
+	s->geefPunten(-ec);
+	assert(studenten.find(s) != studenten.end());
+	studenten.erase(s);
 }
 
-void Module::verwijderStudent(Student *s) {
-	size_t old = studenten.size();
-	int i = 0;
-	for (Student *ss : studenten)
-		if (s == ss)
-			break;
-		else
-			++i;
-
-	if (i >= studenten.size())
-		return;
-
-	studenten.erase(studenten.begin() + i);
-	assert(studenten.size() + 1 == old);
+const std::set<std::shared_ptr<Student>> &Module::geefStudenten() const {
+	return studenten;
 }
-
 
 Module::~Module()
 {

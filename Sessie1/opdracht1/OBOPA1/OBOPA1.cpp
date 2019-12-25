@@ -6,9 +6,9 @@
 #include "time.h"
 #include <chrono> 
 #include <algorithm>
+#include <memory>
 
 #define N_DOCENTEN 3
-#define N_STUDENTEN 10
 #define N_MODULES 3
 
 const char *docentNamen[]{
@@ -17,7 +17,7 @@ const char *docentNamen[]{
 	"Philip de Zeeuw"
 };
 
-const char *studentNamen[]{
+std::vector<std::string> studentNamen = {
 	"Tjaard",
 	"Bas",
 	"Arnoud",
@@ -36,6 +36,7 @@ const char *moduleNamen[]{
 	"Animatie"
 };
 
+// FIXME use cpp RNG
 int random(int min, int max)
 {
 	static bool first = true;
@@ -49,16 +50,15 @@ int random(int min, int max)
 
 void schoonSchermOp() {
 	system("pause");
-	system("cls");
+	//system("cls");
 }
 
-void toonEC(std::vector<Student*> studs) {
-	std::vector<Student*>::iterator stud = studs.begin();
+void toonEC(std::vector<std::shared_ptr<Student>> studs) {
 	std::cout << "Totaal EC per student:" << std::endl << std::endl;
-	while (stud != studs.end()) {
-		std::cout << "Naam: " << (*stud)->naam << std::endl;
-		std::cout << "EC: " << (*stud)->totaalEC << std::endl << std::endl;
-		stud++;
+
+	for (auto &x : studs) {
+		std::cout << "Naam: " << x->naam << std::endl;
+		std::cout << "EC: " << x->totaalEC << std::endl << std::endl;
 	}
 }
 
@@ -73,20 +73,15 @@ void toonModules(std::vector<Module*> mods) {
 	}
 }
 
-void wijzigEC(std::vector<Module*> mods, std::vector<Student*> studs) {
+void wijzigEC(std::vector<Module*> mods, std::vector<std::shared_ptr<Student>> studs) {
 	std::vector<Module*>::iterator mod = mods.begin();
 	(*mod)->wijzigEC(5);
 	toonEC(studs);
 }
 
 void verwijderStudent(std::vector<Module*> mods) {
-	//std::vector<Module*>::iterator mod = mods.begin() + 1;
-	Student *s = mods[1]->geefStudent(0);
-	for (Module *m : mods)
-		m->verwijderStudent(s);
-	//(*mod)->verwijderStudent(0);
-	delete s;
-	toonModules(mods);
+	auto it = mods[1]->geefStudenten().cbegin();
+	mods[1]->verwijderStudent(*it);
 }
 
 int main()
@@ -96,20 +91,18 @@ int main()
 
 	std::vector<Module*> modules;
 	std::vector<Docent*> docenten;
-	std::vector<Student*> studenten;
+	std::vector<std::shared_ptr<Student>> studenten;
 
 	for (int i = 0; i < N_DOCENTEN; i++) {
 		Docent* nieuweDocent = new Docent(docentNamen[i]);
 		docenten.push_back(nieuweDocent);
 	}
 
-	for (int i = 0; i < N_STUDENTEN; i++) {
-		Student* nieuweStudent = new Student(studentNamen[i]);
-		studenten.push_back(nieuweStudent);
+	for (const auto &x : studentNamen) {
+		studenten.emplace_back(new Student(x));
 	}
 
 	std::shuffle(std::begin(docenten), std::end(docenten), generator);
-	std::shuffle(std::begin(studenten), std::end(studenten), generator);
 
 	for (int i = 0; i < N_MODULES; i++) {
 		int ec = random(1, 4);
@@ -117,15 +110,18 @@ int main()
 		nieuweModule->voegDocentToe(docenten[i]);
 		modules.push_back(nieuweModule);
 	}
-	
-	std::vector<Student*>::iterator stud = studenten.begin();
-	while (stud != studenten.end()) {
+
+
+	std::shuffle(std::begin(studenten), std::end(studenten), generator);
+
+	for (auto s : studenten) {
+
 		int aantalModules = random(1, N_MODULES);
 		int offset = random(0, N_MODULES);
-		for (int j = 0; j < aantalModules; j++) {
-			modules[(j + offset) % aantalModules]->voegStudentToe(*stud);
+
+		for (int j = 0; j < aantalModules; ++j) {
+			modules[(j + offset) % aantalModules]->voegStudentToe(s);
 		}
-		stud++;
 	}
 
 	toonModules(modules);
@@ -135,6 +131,10 @@ int main()
 	wijzigEC(modules, studenten);
 	schoonSchermOp();
 	verwijderStudent(modules);
+	toonModules(modules);
+	schoonSchermOp();
+	toonEC(studenten);
+	schoonSchermOp();
 
 	return 0;
 }
