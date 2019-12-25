@@ -6,7 +6,6 @@ class Student
 {
 public:
 	Student(std::string naam);
-	~Student();
 
 	std::string vertelEC();
 	std::string vertelNaam();

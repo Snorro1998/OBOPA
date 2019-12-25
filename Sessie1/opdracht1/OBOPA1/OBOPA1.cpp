@@ -8,10 +8,9 @@
 #include <algorithm>
 #include <memory>
 
-#define N_DOCENTEN 3
 #define N_MODULES 3
 
-const char *docentNamen[]{
+std::vector<std::string> docentNamen = {
 	"Adrie Meijer",
 	"Harro Derksen",
 	"Philip de Zeeuw"
@@ -50,7 +49,7 @@ int random(int min, int max)
 
 void schoonSchermOp() {
 	system("pause");
-	//system("cls");
+	system("cls");
 }
 
 void toonEC(std::vector<std::shared_ptr<Student>> studs) {
@@ -62,24 +61,22 @@ void toonEC(std::vector<std::shared_ptr<Student>> studs) {
 	}
 }
 
-void toonModules(std::vector<Module*> mods) {
+void toonModules(std::vector<std::unique_ptr<Module>> &mods) {
 	std::cout << "Lijst van modules" << std::endl << std::endl;
 
-	std::vector<Module*>::iterator it = mods.begin();
-	while (it != mods.end()) {
-		(*it)->geefModuleBeschrijving();
+	for (auto &x : mods) {
+		x->geefModuleBeschrijving();
 		std::cout << std::endl;
-		it++;
 	}
 }
 
-void wijzigEC(std::vector<Module*> mods, std::vector<std::shared_ptr<Student>> studs) {
-	std::vector<Module*>::iterator mod = mods.begin();
+void wijzigEC(std::vector<std::unique_ptr<Module>> &mods, std::vector<std::shared_ptr<Student>> &studs) {
+	std::vector<std::unique_ptr<Module>>::iterator mod = mods.begin();
 	(*mod)->wijzigEC(5);
 	toonEC(studs);
 }
 
-void verwijderStudent(std::vector<Module*> mods) {
+void verwijderStudent(std::vector<std::unique_ptr<Module>> &mods) {
 	auto it = mods[1]->geefStudenten().cbegin();
 	mods[1]->verwijderStudent(*it);
 }
@@ -89,13 +86,12 @@ int main()
 	std::default_random_engine generator;
 	generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
 
-	std::vector<Module*> modules;
-	std::vector<Docent*> docenten;
+	std::vector<std::unique_ptr<Module>> modules;
+	std::vector<std::shared_ptr<Docent>> docenten;
 	std::vector<std::shared_ptr<Student>> studenten;
 
-	for (int i = 0; i < N_DOCENTEN; i++) {
-		Docent* nieuweDocent = new Docent(docentNamen[i]);
-		docenten.push_back(nieuweDocent);
+	for (const auto &x : docentNamen) {
+		docenten.emplace_back(new Docent(x));
 	}
 
 	for (const auto &x : studentNamen) {
@@ -106,9 +102,8 @@ int main()
 
 	for (int i = 0; i < N_MODULES; i++) {
 		int ec = random(1, 4);
-		Module* nieuweModule = new Module(moduleNamen[i], ec);
-		nieuweModule->voegDocentToe(docenten[i]);
-		modules.push_back(nieuweModule);
+		modules.emplace_back(new Module(moduleNamen[i], ec));
+		modules[modules.size() - 1]->voegDocentToe(docenten[i].get());
 	}
 
 

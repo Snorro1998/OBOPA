@@ -6,11 +6,6 @@ Student::Student(std::string naam) :naam(naam)
 {
 }
 
-
-Student::~Student()
-{
-}
-
 void Student::geefPunten(int ec) {
 	totaalEC += ec;
 }

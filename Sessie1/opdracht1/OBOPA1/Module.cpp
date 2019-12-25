@@ -66,7 +66,3 @@ void Module::verwijderStudent(std::shared_ptr<Student> s) {
 const std::set<std::shared_ptr<Student>> &Module::geefStudenten() const {
 	return studenten;
 }
-
-Module::~Module()
-{
-}

@@ -11,7 +11,6 @@ class Module
 {
 public:
 	Module(std::string naam, int ec);
-	~Module();
 
 	void voegDocentToe(Docent* d);
 	void voegStudentToe(std::shared_ptr<Student> s);
