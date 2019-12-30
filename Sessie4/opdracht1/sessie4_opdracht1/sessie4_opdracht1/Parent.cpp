@@ -34,6 +34,26 @@ Parent& Parent::operator=(const Parent& other) {
 	return *this;
 }
 
+#ifdef MOVESEMANTICS
+Parent::Parent(Parent&& other) noexcept {
+	this->name = other.name;
+	other.name = "";
+	this->child.reset(other.child.release());
+}
+
+Parent& Parent::operator=(Parent&& other) {
+	std::cout << "move-operator assignment" << std::endl;
+	if (this != &other) {
+		this->child.reset();
+		this->name = other.name;
+		other.name = "";
+		this->child.reset(other.child.release());
+	}
+	return *this;
+}
+#endif
+
+
 std::ostream& operator<<(std::ostream& os, const Parent& parent) {
 	os << "parent name: " << parent.name;
 	if (parent.child.get() != nullptr)

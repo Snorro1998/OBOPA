@@ -35,5 +35,10 @@ int main() {
 
 	std::cout << *p4 << '\n' << *p5 << '\n' << *p6 << '\n' << *p7 << std::endl;
 
+	Parent mp("whoah");
+	mp = Parent("move");
+
+	std::cout << mp << std::endl;
+
 	return 0;
 }
