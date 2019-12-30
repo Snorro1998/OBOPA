@@ -18,10 +18,10 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Parent.h">
+    <ClInclude Include="Child.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Child.h">
+    <ClInclude Include="Parent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -29,13 +29,13 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parentchild.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Parent.cpp">
+    <ClCompile Include="sessie4_opdracht1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Child.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Parent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

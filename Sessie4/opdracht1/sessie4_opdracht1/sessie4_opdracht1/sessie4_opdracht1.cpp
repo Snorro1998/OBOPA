@@ -1,4 +1,6 @@
 #include "pch.h"
+
+#include  "vld.h"
 #include <iostream>
 #include "Parent.h"
 
@@ -18,6 +20,20 @@ int main() {
 	delete p1;
 	delete p2;
 	delete p3;
+
+	auto p4 = std::make_shared<Parent>("Parent4");
+
+	std::cout << "aantal keren gebruikt: " << p4.use_count() << std::endl;
+
+	auto p5 = p4;
+	auto p6 = p4;
+	auto p7 = p4;
+
+	std::cout << "aantal keren gebruikt: " << p4.use_count() << std::endl;
+
+	p5->deleteChild();
+
+	std::cout << *p4 << '\n' << *p5 << '\n' << *p6 << '\n' << *p7 << std::endl;
 
 	return 0;
 }
